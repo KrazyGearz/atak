@@ -6,6 +6,9 @@ REPO_README.txt
 *.apk
 *.ap_
 
+# swap files
+.swp
+
 # Files for the ART/Dalvik VM
 *.dex
 
