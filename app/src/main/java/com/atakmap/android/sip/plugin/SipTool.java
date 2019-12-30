@@ -1,8 +1,8 @@
 
-package com.atakmap.android.plugintemplate.plugin;
+package com.atakmap.android.sip.plugin;
 
 import com.atakmap.android.ipc.AtakBroadcast;
-import com.atakmap.android.plugintemplate.PluginTemplateDropDownReceiver;
+import com.atakmap.android.sip.SipDropDownReceiver;
 
 import android.app.Activity;
 import android.content.Context;
@@ -15,11 +15,11 @@ import transapps.maps.plugin.tool.Group;
 import transapps.maps.plugin.tool.Tool;
 import transapps.maps.plugin.tool.ToolDescriptor;
 
-public class PluginTemplateTool extends Tool implements ToolDescriptor {
+public class SipTool extends Tool implements ToolDescriptor {
 
     private final Context context;
 
-    public PluginTemplateTool(Context context) {
+    public SipTool(Context context) {
         this.context = context;
     }
 
@@ -65,7 +65,7 @@ public class PluginTemplateTool extends Tool implements ToolDescriptor {
 
         //arg2.setVisibility(ViewGroup.INVISIBLE);
         Intent i = new Intent(
-                PluginTemplateDropDownReceiver.SHOW_PLUGIN);
+                SipDropDownReceiver.SHOW_PLUGIN);
         AtakBroadcast.getInstance().sendBroadcast(i);
     }
 

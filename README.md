@@ -1,16 +1,16 @@
-(Plugin Name)
+SIP
 
 
 _________________________________________________________________
 PURPOSE AND CAPABILITIES
 
-(General Description)
+Provides a SIP capability for ATAK based on native Android libraries.
 
 
 _________________________________________________________________
 STATUS
 
-(In Progress?  Expected release?  Released?  To Who?  When?)
+In Progress
 
 _________________________________________________________________
 POINT OF CONTACTS
