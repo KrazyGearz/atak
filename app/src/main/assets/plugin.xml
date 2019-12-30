@@ -4,12 +4,12 @@
 
     <extension
         type="transapps.maps.plugin.lifecycle.Lifecycle"
-        impl="com.atakmap.android.sip.plugin.SipLifecycle"
+        impl="com.atakmap.android.plugintemplate.plugin.PluginTemplateLifecycle"
         singleton="true" />
 
     <extension
         type="transapps.maps.plugin.tool.ToolDescriptor"
-        impl="com.atakmap.android.sip.plugin.SipTool"
+        impl="com.atakmap.android.plugintemplate.plugin.PluginTemplateTool"
         singleton="true" />
 
 </plugin>

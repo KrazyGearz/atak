@@ -1,5 +1,5 @@
 
-package com.atakmap.android.sip.plugin;
+package com.atakmap.android.plugintemplate.plugin;
 
 import java.io.File;
 import java.util.List;

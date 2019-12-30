@@ -1,5 +1,5 @@
 
-package com.atakmap.android.sip.plugin;
+package com.atakmap.android.plugintemplate.plugin;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -7,7 +7,7 @@ import java.util.LinkedList;
 
 import com.atakmap.android.maps.MapComponent;
 import com.atakmap.android.maps.MapView;
-import com.atakmap.android.sip.SipMapComponent;
+import com.atakmap.android.plugintemplate.PluginTemplateMapComponent;
 
 import transapps.maps.plugin.lifecycle.Lifecycle;
 import android.app.Activity;
@@ -15,16 +15,16 @@ import android.content.Context;
 import android.content.res.Configuration;
 import com.atakmap.coremap.log.Log;
 
-public class SipLifecycle implements Lifecycle {
+public class PluginTemplateLifecycle implements Lifecycle {
 
     private final Context pluginContext;
     private final Collection<MapComponent> overlays;
     private MapView mapView;
 
-    private final static String TAG = SipLifecycle.class
+    private final static String TAG = PluginTemplateLifecycle.class
             .getSimpleName();
 
-    public SipLifecycle(Context ctx) {
+    public PluginTemplateLifecycle(Context ctx) {
         this.pluginContext = ctx;
         this.overlays = new LinkedList<MapComponent>();
         this.mapView = null;
@@ -45,19 +45,19 @@ public class SipLifecycle implements Lifecycle {
             return;
         }
         this.mapView = (MapView) arg1.getView();
-        SipLifecycle.this.overlays
-                .add(new SipMapComponent());
+        PluginTemplateLifecycle.this.overlays
+                .add(new PluginTemplateMapComponent());
 
         // create components
-        Iterator<MapComponent> iter = SipLifecycle.this.overlays
+        Iterator<MapComponent> iter = PluginTemplateLifecycle.this.overlays
                 .iterator();
         MapComponent c;
         while (iter.hasNext()) {
             c = iter.next();
             try {
-                c.onCreate(SipLifecycle.this.pluginContext,
+                c.onCreate(PluginTemplateLifecycle.this.pluginContext,
                         arg0.getIntent(),
-                        SipLifecycle.this.mapView);
+                        PluginTemplateLifecycle.this.mapView);
             } catch (Exception e) {
                 Log.w(TAG,
                         "Unhandled exception trying to create overlays MapComponent",
