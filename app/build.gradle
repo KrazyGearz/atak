@@ -166,9 +166,9 @@ android {
         }
 
         release {
-            def f = new File("$project.projectDir/../../ATAK/app/build/outputs/mapping/release/mapping.txt");
+            def f = new File("$project.projectDir/../../../ATAK/app/build/outputs/mapping/release/mapping.txt");
             if (f.exists()) {
-                System.setProperty("atak.proguard.mapping", "../../ATAK/app/build/outputs/mapping/release/mapping.txt")
+                System.setProperty("atak.proguard.mapping", "../../../ATAK/app/build/outputs/mapping/release/mapping.txt")
             } else {
                 println("WARNING: no mapping file exists, obfuscating just the plugin to work with the development core");
                 file("$project.projectDir/build").mkdir()
