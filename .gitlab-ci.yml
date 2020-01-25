@@ -2,7 +2,7 @@
 # TODO - create an image that is the openjdk image + the SDK and NDK setup to 
 #        make initialization faster   shb 10/19/2019
 
-image: openjdk:11-jdk
+image: openjdk:8-jdk
 
 variables:
   ANDROID_COMPILE_SDK: "21"
@@ -21,15 +21,16 @@ cache:
     - android-ndk-r12b
 
 before_script:
-
+  - curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash
+  - apt-get install git-lfs
   #- stage the sdk
-  - git clone --depth 1 https://milsdk_builder:3ydao3HGquPdh2ybxKQk@git.takmaps.com/sdks/atak-mil.git
+  - git clone --depth 1 https://civsdk_builder:_NxPo8NmvzvgNRxaNzH-@git.takmaps.com/sdks/atak-civ.git
 
   # TODO - investigate why lfs pull is failing with 
   # git lfs pull cannot add to the index - missing --add option? fixed
   # when using git clone -n 
   #- pushd .
-  #- cd atak-mil
+  #- cd atak-civ
   #- GIT_TRACE=1 git lfs pull -I "*main.jar"
   #- popd
 
@@ -78,8 +79,8 @@ assembleMilRelease:
   script:
     - pwd .
     - mkdir sdk
-    - cp atak-mil/main.jar sdk
-    - cp atak-mil/android_keystore sdk
+    - cp atak-civ/main.jar sdk
+    - cp atak-civ/android_keystore sdk
     - find . -name main.jar
     - ./gradlew -Pci --console=plain lintMilRelease assembleMilDebug
   artifacts:
@@ -91,7 +92,7 @@ assembleCivRelease:
   stage: build
   script:
     - mkdir sdk
-    - cp atak-mil/main.jar sdk
+    - cp atak-civ/main.jar sdk
     - ./gradlew -Pci --console=plain lintCivRelease assembleCivRelease
   artifacts:
     expire_in: 720h
@@ -104,7 +105,7 @@ assembleFveyRelease:
   stage: build
   script:
     - mkdir sdk
-    - cp atak-mil/main.jar sdk
+    - cp atak-civ/main.jar sdk
     - ./gradlew -Pci --console=plain lintFveyRelease assembleFveyRelease
   artifacts:
     expire_in: 720h
@@ -117,5 +118,5 @@ testRelease:
   stage: test
   script:
     - mkdir sdk
-    - cp atak-mil/main.jar sdk
+    - cp atak-civ/main.jar sdk
     - ./gradlew -Pci --console=plain :app:testMilRelease
