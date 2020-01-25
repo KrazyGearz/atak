@@ -251,5 +251,11 @@ android {
 
     }
 
+    if(file("$project.projectDir/../espresso/testSetup.gradle").exists()) {
+         apply from: '../espresso/testSetup.gradle'
+    } else {
+         println("espresso test harness not found")
+    }
+
 
 }
