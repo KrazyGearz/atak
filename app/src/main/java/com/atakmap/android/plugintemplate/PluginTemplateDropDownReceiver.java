@@ -3,9 +3,9 @@ package com.atakmap.android.plugintemplate;
 
 import android.content.Context;
 import android.content.Intent;
-import android.view.LayoutInflater;
 import android.view.View;
 
+import com.atak.plugins.impl.PluginLayoutInflater;
 import com.atakmap.android.maps.MapView;
 import com.atakmap.android.plugintemplate.plugin.R;
 import com.atakmap.android.dropdown.DropDown.OnStateListener;
@@ -29,9 +29,11 @@ public class PluginTemplateDropDownReceiver extends DropDownReceiver implements
             final Context context) {
         super(mapView);
         this.pluginContext = context;
-        LayoutInflater inflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        templateView = inflater.inflate(R.layout.main_layout, null);
+
+        // Remember to use the PluginLayoutInflator if you are actually inflating a custom view
+        // In this case, using it is not necessary - but I am putting it here to remind
+        // developers to look at this Inflator
+        templateView = PluginLayoutInflater.inflate(context, R.layout.main_layout, null);
     }
 
     /**************************** PUBLIC METHODS *****************************/
@@ -44,9 +46,13 @@ public class PluginTemplateDropDownReceiver extends DropDownReceiver implements
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        Log.d(TAG, "showing plugin drop down");
-        if (intent.getAction().equals(SHOW_PLUGIN)) {
+        final String action = intent.getAction();
+        if (action == null)
+            return;
 
+        if (action.equals(SHOW_PLUGIN)) {
+
+            Log.d(TAG, "showing plugin drop down");
             showDropDown(templateView, HALF_WIDTH, FULL_HEIGHT, FULL_WIDTH,
                     HALF_HEIGHT, false);
         }
@@ -68,5 +74,4 @@ public class PluginTemplateDropDownReceiver extends DropDownReceiver implements
     public void onDropDownClose() {
     }
 
-    /************************* Helper Methods *************************/
 }

@@ -21,12 +21,11 @@ public class PluginTemplateLifecycle implements Lifecycle {
     private final Collection<MapComponent> overlays;
     private MapView mapView;
 
-    private final static String TAG = PluginTemplateLifecycle.class
-            .getSimpleName();
+    private final static String TAG = "PluginTemplateLifecycle";
 
     public PluginTemplateLifecycle(Context ctx) {
         this.pluginContext = ctx;
-        this.overlays = new LinkedList<MapComponent>();
+        this.overlays = new LinkedList<>();
         this.mapView = null;
         PluginNativeLoader.init(ctx);
     }

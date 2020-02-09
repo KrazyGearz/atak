@@ -13,9 +13,9 @@ import com.atakmap.android.plugintemplate.plugin.R;
 
 public class PluginTemplateMapComponent extends DropDownMapComponent {
 
-    public static final String TAG = "PluginTemplateMapComponent";
+    private static final String TAG = "PluginTemplateMapComponent";
 
-    public Context pluginContext;
+    private Context pluginContext;
 
     private PluginTemplateDropDownReceiver ddr;
 

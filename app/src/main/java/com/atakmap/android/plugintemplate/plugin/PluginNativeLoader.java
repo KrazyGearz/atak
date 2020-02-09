@@ -2,9 +2,6 @@
 package com.atakmap.android.plugintemplate.plugin;
 
 import java.io.File;
-import java.util.List;
-import java.util.ArrayList;
-import com.atakmap.coremap.log.Log;
 import android.content.Context;
 
 /**
@@ -24,11 +21,9 @@ public class PluginNativeLoader {
     synchronized static public void init(final Context context) {
         if (ndl == null) {
             try {
-                final String nativeDir = context.getPackageManager()
+                ndl = context.getPackageManager()
                         .getApplicationInfo(context.getPackageName(),
                                 0).nativeLibraryDir;
-
-                ndl = nativeDir;
             } catch (Exception e) {
                 throw new IllegalArgumentException(
                         "native library loading will fail, unable to grab the nativeLibraryDir from the package name");
@@ -50,7 +45,6 @@ public class PluginNativeLoader {
                     + System.mapLibraryName(name);
             if (new File(lib).exists()) {
                 System.load(lib);
-                return;
             }
         } else {
             throw new IllegalArgumentException("NativeLoader not initialized");
