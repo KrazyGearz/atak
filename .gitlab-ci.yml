@@ -23,9 +23,16 @@ cache:
 before_script:
   - curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash
   - apt-get install git-lfs
-  #- stage the sdk
-  - git clone --depth 1 https://civsdk_builder:_NxPo8NmvzvgNRxaNzH-@git.takmaps.com/sdks/atak-civ.git
 
+  - if [[ "$CI_COMMIT_REF_NAME" == "maintenance-"* ]]; then
+        SDK_BRANCH_NAME=$CI_COMMIT_REF_NAME;
+    else
+        SDK_BRANCH_NAME="master";
+    fi
+  - echo "SDK Branch $SDK_BRANCH_NAME"
+
+  - git clone --depth 1 -b $SDK_BRANCH_NAME https://civsdk_builder:_NxPo8NmvzvgNRxaNzH-@git.takmaps.com/sdks/atak-civ.git;
+  
   # TODO - investigate why lfs pull is failing with 
   # git lfs pull cannot add to the index - missing --add option? fixed
   # when using git clone -n 
@@ -73,7 +80,7 @@ before_script:
 stages:
   - build
   - test
-
+  
 assembleMilRelease:
   stage: build
   script:
@@ -100,7 +107,6 @@ assembleCivRelease:
     paths:
     - app/build/outputs/
   when: manual
-
 
 assembleFveyRelease:
   stage: build
