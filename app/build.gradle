@@ -6,11 +6,24 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-def PLUGIN_VERSION = "1.0"
-def ATAK_VERSION = "4.1.0"
+buildscript {
+    ext.PLUGIN_VERSION = "1.0"
+    ext.ATAK_VERSION = "4.1.0"
 
+    ext.sdkPath = project.properties['sdk.path'] ?: "${rootDir}/sdk"
+    ext.takrepoUrl = project.properties['takrepo.url']
+    ext.takrepoUser = project.properties['takrepo.user']
+    ext.takrepoPassword = project.properties['takrepo.password']
 
- buildscript {
+    ext.atakApkConfiguration = 'AtakApk'
+    ext.mappingConfiguration = 'Mapping'
+    ext.keystoreConfiguration = 'Keystore'
+
+    ext.mavenOnly = project.properties['maven.only'] ?: false
+
+    ext.pluginVersion = PLUGIN_VERSION
+    ext.atakVersion = ATAK_VERSION
+
     repositories {
         jcenter()
         google()
@@ -18,74 +31,41 @@ def ATAK_VERSION = "4.1.0"
         maven {
             url "https://jitpack.io"
         }
-
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.6.3'
     }
- }
+}
 
 allprojects {
     repositories {
-        google() 
+        jcenter()
+        google()
         mavenCentral()
         maven {
             url "https://jitpack.io"
         }
-        jcenter()
-
     }
 }
 
 apply plugin: 'com.android.application'
-
-
-dependencies {
-
-    if (new File("$project.projectDir/../../../ATAK/app/build/libs/main.jar").exists()) {
-        println("using the autobuilder version of main.jar")
-        compileOnly fileTree(dir: '../../../ATAK/app/build/libs', include: '*.jar')
-    } else if (new File("$project.projectDir/../../../main.jar").exists()) {
-        println("using the sdk version of main.jar")
-        compileOnly fileTree(dir: '../../..', include: '*.jar')
-    } else if (new File("sdk/main.jar").exists()) {
-        println("using the local version of main.jar")
-        compileOnly fileTree(dir: '../sdk/main.jar', include: '*.jar')
-    } else if (project.rootProject.file("local.properties").exists()) {
-        def props = new Properties()
-        props.load(project.rootProject.file("local.properties").newDataInputStream())
-        def sdkdir = props.getProperty("sdk.path").toString()
-        if (sdkdir == null) {
-            println("error reading sdk.path from the local.properties file, this should point to the main.jar file")
-        }
-        if (new File(sdkdir).exists()) {
-           println("using the local version of ${sdkdir}")
-           compileOnly fileTree(dir: "${sdkdir}", include: '*.jar')
-        }
-    } else {
-        println("WARNING: could not find the sdk")
-    }
-
-
-    implementation fileTree(dir: 'libs', include: '*.jar')
-
-}
+apply plugin: 'gov.tak.atakplugin'
 
 // Attempt to get a suitable version name for the plugin based on
 // either a git or svn repository
-def getVersionName() { 
+def getVersionName() {
     try {
-            def stdout = new ByteArrayOutputStream()
-            exec {
-                commandLine 'git', 'rev-parse', '--short=8', 'HEAD'
-                standardOutput = stdout
-            }
-            def describe = stdout.toString().trim()
-            println("versionName[git]: $describe")
-            return describe
+        def stdout = new ByteArrayOutputStream()
+        exec {
+            commandLine 'git', 'rev-parse', '--short=8', 'HEAD'
+            standardOutput = stdout
+        }
+        def describe = stdout.toString().trim()
+        println("versionName[git]: $describe")
+        return describe
     } catch (Exception ignored) {
-       println("error occured, using revision of 1")
-       return 1
+        println("error occured, using revision of 1")
+        return 1
     }
 }
 
@@ -95,92 +75,125 @@ def getVersionName() {
 def getVersionCode() {
     try {
         new ByteArrayOutputStream().withStream { os ->
-                def result = exec {
-                    executable = 'git'
-                    args = ['show', '-s', '--format=%ct']
-                    standardOutput = os
-                    ignoreExitValue = true
-                }
-            
-            def outputAsString = os.toString()
-                ext.revision = "$outputAsString".toInteger()
+            def result = exec {
+                executable = 'git'
+                args = ['show', '-s', '--format=%ct']
+                standardOutput = os
+                ignoreExitValue = true
+            }
 
-                 println("version[git]: $revision")
+            def outputAsString = os.toString()
+            ext.revision = "$outputAsString".toInteger()
+
+            println("version[git]: $revision")
         }
     } catch (Exception ignored) {
-       println("error occured, using revision of 1")
-       ext.revision = 1
+        println("error occured, using revision of 1")
+        ext.revision = 1
     }
 
     return revision
 }
 
 
-
-
-
 android {
     compileSdkVersion 26
     buildToolsVersion "29.0.2"
 
-   dexOptions {
+    dexOptions {
         jumboMode = true
     }
 
     lintOptions {
-          checkReleaseBuilds true
-          // Or, if you prefer, you can continue to check for errors in release builds,
-          // but continue the build even when errors are found:
-          abortOnError true
-      }
-
+        checkReleaseBuilds true
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError true
+    }
 
     signingConfigs {
-        debug {
-            if (new File("sdk/android_keystore").exists()) {
-                 storeFile file("../sdk/android_keystore")
-            } else { 
-                 storeFile file("../../../android_keystore")
-            }
-            storePassword "tnttnt"
-            keyAlias "wintec_mapping"
-            keyPassword "tnttnt"
-        }
-
         release {
-            if (new File("sdk/android_keystore").exists()) {
-                storeFile file("../sdk/android_keystore")
-            } else { 
-                storeFile file("../../../android_keystore")
-            }
+            storeFile file("${buildDir}/android_keystore")
             storePassword "tnttnt"
             keyAlias "wintec_mapping"
             keyPassword "tnttnt"
         }
     }
-
 
     buildTypes {
         debug {
             debuggable true
+            matchingFallbacks = ['sdk']
         }
 
         release {
-            def f = new File("$project.projectDir/../../../ATAK/app/build/outputs/mapping/release/mapping.txt")
-            if (f.exists()) {
-                System.setProperty("atak.proguard.mapping", "../../../ATAK/app/build/outputs/mapping/release/mapping.txt")
-            } else {
-                println("WARNING: no mapping file exists, obfuscating just the plugin to work with the development core")
-                file("$project.projectDir/build").mkdir()
-                file("$project.projectDir/build/blank-mapping.txt").text=""
-                System.setProperty("atak.proguard.mapping", "./build/blank-mapping.txt")
-            }
-
             minifyEnabled true
             proguardFile 'proguard-gradle.txt'
             signingConfig signingConfigs.release
+            matchingFallbacks = ['odk']
         }
     }
+
+    flavorDimensions "application"
+
+    productFlavors {
+        mil {
+            getIsDefault().set(true)
+            dimension "application"
+            manifestPlaceholders = [atakApiVersion: "com.atakmap.app@" + ATAK_VERSION + ".MIL"]
+        }
+        civ {
+            dimension "application"
+            manifestPlaceholders = [atakApiVersion: "com.atakmap.app@" + ATAK_VERSION + ".CIV"]
+        }
+        fvey {
+            dimension "application"
+            manifestPlaceholders = [atakApiVersion: "com.atakmap.app@" + ATAK_VERSION + ".FVEY"]
+        }
+        aus {
+            dimension "application"
+            manifestPlaceholders = [atakApiVersion: "com.atakmap.app@" + ATAK_VERSION + ".AUS"]
+            matchingFallbacks = 'fvey'
+        }
+        nzl {
+            dimension "application"
+            manifestPlaceholders = [atakApiVersion: "com.atakmap.app@" + ATAK_VERSION + ".NZL"]
+            matchingFallbacks = 'fvey'
+        }
+        prt {
+            dimension "application"
+            manifestPlaceholders = [atakApiVersion: "com.atakmap.app@" + ATAK_VERSION + ".PRT"]
+            matchingFallbacks = 'fvey'
+        }
+        gbr {
+            dimension "application"
+            manifestPlaceholders = [atakApiVersion: "com.atakmap.app@" + ATAK_VERSION + ".GBR"]
+            matchingFallbacks = 'fvey'
+        }
+        can {
+            dimension "application"
+            manifestPlaceholders = [atakApiVersion: "com.atakmap.app@" + ATAK_VERSION + ".CAN"]
+            matchingFallbacks = 'fvey'
+        }
+        intl {
+            dimension "application"
+            manifestPlaceholders = [atakApiVersion: "com.atakmap.app@" + ATAK_VERSION + ".INTL"]
+            matchingFallbacks = 'fvey'
+        }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/INDEX.LIST'
+    }
+
+    sourceSets {
+        main {
+            setProperty("archivesBaseName", "ATAK-Plugin-" + rootProject.name + "-" + PLUGIN_VERSION + "-" + getVersionName() + "-" + ATAK_VERSION)
+            defaultConfig.versionCode = getVersionCode()
+            defaultConfig.versionName = PLUGIN_VERSION + " (" + getVersionName() + ") - [" + ATAK_VERSION + "]"
+        }
+    }
+
     packagingOptions {
         exclude 'META-INF/INDEX.LIST'
     }
@@ -213,54 +226,28 @@ android {
         }
     }
 
-    flavorDimensions "application"
-
-    productFlavors {
-        mil {
-            getIsDefault().set(true)
-            dimension "application"
-            manifestPlaceholders = [atakApiVersion: "com.atakmap.app@" + ATAK_VERSION + ".MIL"]
-        }
-        civ {
-            dimension "application"
-            manifestPlaceholders = [atakApiVersion: "com.atakmap.app@" + ATAK_VERSION + ".CIV"]
-        }
-        fvey {
-            dimension "application"
-            manifestPlaceholders = [atakApiVersion: "com.atakmap.app@" + ATAK_VERSION + ".FVEY"]
-        }
-        aus {
-            dimension "application"
-            manifestPlaceholders = [atakApiVersion: "com.atakmap.app@" + ATAK_VERSION + ".AUS"]
-        }
-        nzl {
-            dimension "application"
-            manifestPlaceholders = [atakApiVersion: "com.atakmap.app@" + ATAK_VERSION + ".NZL"]
-        }
-        prt {
-            dimension "application"
-            manifestPlaceholders = [atakApiVersion: "com.atakmap.app@" + ATAK_VERSION + ".PRT"]
-        }
-        gbr {
-            dimension "application"
-            manifestPlaceholders = [atakApiVersion: "com.atakmap.app@" + ATAK_VERSION + ".GBR"]
-        }
-        can {
-            dimension "application"
-            manifestPlaceholders = [atakApiVersion: "com.atakmap.app@" + ATAK_VERSION + ".CAN"]
-        }
-        intl {
-            dimension "application"
-            manifestPlaceholders = [atakApiVersion: "com.atakmap.app@" + ATAK_VERSION + ".INTL"]
-        }
-
-    }
-
-    if(file("$project.projectDir/../espresso/testSetup.gradle").exists()) {
-         apply from: '../espresso/testSetup.gradle'
+    if (file("$project.projectDir/../espresso/testSetup.gradle").exists()) {
+        apply from: '../espresso/testSetup.gradle'
     } else {
-         println("espresso test harness not found")
+        println("espresso test harness not found")
     }
+}
+
+// dependencies and configuration have to follow android closure to support build variants
+configurations {
+    // from https://developer.android.com/studio/build/dependencies#dependency_configurations
+    // which indicates we need to define our variant permutations in advance of the dependencies
+
+    android.applicationVariants.all { variant ->
+        "${variant.name}${mappingConfiguration}" {}
+        "${variant.name}${keystoreConfiguration}" {}
+        "${variant.name}${atakApkConfiguration}" {}
+    }
+}
+
+dependencies {
 
 
+
+    implementation fileTree(dir: 'libs', include: '*.jar')
 }
