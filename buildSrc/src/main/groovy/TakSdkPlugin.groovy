@@ -135,7 +135,11 @@ class TakSdkPlugin implements Plugin<Project> {
                         println("${variant.name} => WARNING: no mapping file could be establishd, obfuscating just the plugin to work with the development core")
                     }
                     System.setProperty("atak.proguard.mapping", mappingFqn)
+                }
+            }
 
+            if ('release' == variant.buildType.name || 'debug' == variant.buildType.name) {
+                project."pre${variant.name.capitalize()}Build".doFirst {
                     // Keystore
 
                     def storeName = 'android_keystore'
