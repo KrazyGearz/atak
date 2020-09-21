@@ -153,7 +153,7 @@ class TakSdkPlugin implements Plugin<Project> {
                             }
                         }
                         storeFqn = "${project.buildDir}/${storeName}"
-                        println("${variant.name} => found store at ${storeFqn}")
+                        //println("${variant.name} => found store at ${storeFqn}")
                     } else {
                         println("${variant.name} => WARNING: no keystore could be establishd, signing will fail")
                     }
@@ -249,6 +249,8 @@ class TakSdkPlugin implements Plugin<Project> {
 
                     System.setProperty("atak.proguard.mapping", mappingFqn)
 
+            }
+            if ('release' == variant.buildType.name || 'debug' == variant.buildType.name) {
                     // Keystore
                     def storeName = 'android_keystore'
                     def storeFqn = "${project.takSdk.localSdkPath}/android_keystore"
@@ -260,7 +262,7 @@ class TakSdkPlugin implements Plugin<Project> {
                                 return storeName
                             }
                         }
-                        println("${variant.name} => found store at ${storeFqn}")
+                        //println("${variant.name} => found store at ${storeFqn}")
                     } else {
                         println("${variant.name} => WARNING: no keystore could be establishd, signing will fail")
                     }
@@ -364,6 +366,9 @@ class TakSdkPlugin implements Plugin<Project> {
                     }
 
                     System.setProperty("atak.proguard.mapping", mappingFqn)
+            }
+
+            if ('release' == variant.buildType.name || 'debug' == variant.buildType.name) {
 
                     // Keystore
                     def storeName = 'android_keystore'
