@@ -9,7 +9,7 @@ repositories {
     }
 }
 dependencies {
-    compileOnly 'com.android.tools.build:gradle:3.6.3'
+    compileOnly 'com.android.tools.build:gradle:4.0.1'
     compileOnly 'org.codehaus.groovy:groovy-all:2.5.10'
     compileOnly gradleApi()
 }
