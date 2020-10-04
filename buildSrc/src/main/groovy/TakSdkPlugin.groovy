@@ -100,16 +100,9 @@ class TakSdkPlugin implements Plugin<Project> {
             def apiJarName = "${variant.flavorName}-${devType}-${project.version}-api.jar"
             def apiFqn = "${project.rootDir}/../../ATAK/app/build/libs/main.jar"
             if (new File(apiFqn).exists()) {
-                project.copy {
-                    from apiFqn
-                    into project.buildDir
-                    rename {
-                        return apiJarName
-                    }
-                }
                 // add the JAR file as a dependency
                 Configuration config = project.configurations.getByName("${variant.name}CompileOnly")
-                Dependency dep = project.dependencies.create(project.fileTree(dir: project.buildDir, include: apiJarName))
+                Dependency dep = project.dependencies.create(project.files(apiFqn))
                 config.dependencies.add(dep)
             } else {
                 println("${variant.name} => WARNING: no API file could be established, compilation will fail")
@@ -208,20 +201,12 @@ class TakSdkPlugin implements Plugin<Project> {
             def apiJarName = "${variant.flavorName}-${devType}-${project.version}-api.jar"
             def apiFqn = "${project.takSdk.localSdkPath}/main.jar"
             if (new File(apiFqn).exists()) {
-                project.copy {
-                    from apiFqn
-                    into project.buildDir
-                    rename {
-                        return apiJarName
-                    }
-                }
-
                 // add the JAR file as a dependency
                 Configuration config = project.configurations.getByName("${variant.name}CompileOnly")
-                Dependency dep = project.dependencies.create(project.fileTree(dir: project.buildDir, include: apiJarName))
+                Dependency dep = project.dependencies.create(project.files(apiFqn))
                 config.dependencies.add(dep)
             } else {
-                println("${variant.name} => WARNING: no API file could be establishd, compilation will fail")
+                println("${variant.name} => WARNING: no API file could be established, compilation will fail")
             }
         }
 
@@ -249,23 +234,23 @@ class TakSdkPlugin implements Plugin<Project> {
 
                     System.setProperty("atak.proguard.mapping", mappingFqn)
 
+                }
             }
             if ('release' == variant.buildType.name || 'debug' == variant.buildType.name) {
-                    // Keystore
-                    def storeName = 'android_keystore'
-                    def storeFqn = "${project.takSdk.localSdkPath}/android_keystore"
-                    if (new File(storeFqn).exists()) {
-                        project.copy {
-                            from storeFqn
-                            into project.buildDir
-                            rename {
-                                return storeName
-                            }
+                // Keystore
+                def storeName = 'android_keystore'
+                def storeFqn = "${project.takSdk.localSdkPath}/android_keystore"
+                if (new File(storeFqn).exists()) {
+                    project.copy {
+                        from storeFqn
+                        into project.buildDir
+                        rename {
+                            return storeName
                         }
-                        //println("${variant.name} => found store at ${storeFqn}")
-                    } else {
-                        println("${variant.name} => WARNING: no keystore could be establishd, signing will fail")
                     }
+                    //println("${variant.name} => found store at ${storeFqn}")
+                } else {
+                    println("${variant.name} => WARNING: no keystore could be established, signing will fail")
                 }
             }
         }
