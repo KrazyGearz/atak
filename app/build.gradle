@@ -11,7 +11,7 @@ buildscript {
     ext.PLUGIN_VERSION = "1.0"
     ext.ATAK_VERSION = "4.2.0"
 
-    def takdevVersion = '1.1.0'
+    def takdevVersion = '2.0.0'
 
     def getValueFromPropertiesFile = { propFile, key ->
         if(!propFile.isFile() || !propFile.canRead())
@@ -164,7 +164,6 @@ android {
             debuggable true
             matchingFallbacks = ['sdk']
         }
-
         release {
             minifyEnabled true
             proguardFile 'proguard-gradle.txt'
@@ -185,24 +184,17 @@ android {
             dimension "application"
             manifestPlaceholders = [atakApiVersion: "com.atakmap.app@" + ATAK_VERSION + ".CIV"]
         }
-        fvey {
-            dimension "application"
-            manifestPlaceholders = [atakApiVersion: "com.atakmap.app@" + ATAK_VERSION + ".FVEY"]
-        }
         aus {
             dimension "application"
             manifestPlaceholders = [atakApiVersion: "com.atakmap.app@" + ATAK_VERSION + ".AUS"]
-            matchingFallbacks = 'fvey'
         }
         nzl {
             dimension "application"
             manifestPlaceholders = [atakApiVersion: "com.atakmap.app@" + ATAK_VERSION + ".NZL"]
-            matchingFallbacks = 'fvey'
         }
         prt {
             dimension "application"
             manifestPlaceholders = [atakApiVersion: "com.atakmap.app@" + ATAK_VERSION + ".PRT"]
-            matchingFallbacks = 'fvey'
         }
         nor {
             dimension "application"
@@ -211,22 +203,18 @@ android {
         hun {
             dimension "application"
             manifestPlaceholders = [atakApiVersion: "com.atakmap.app@" + ATAK_VERSION + ".HUN"]
-            matchingFallbacks = 'fvey'
         }
         gbr {
             dimension "application"
             manifestPlaceholders = [atakApiVersion: "com.atakmap.app@" + ATAK_VERSION + ".GBR"]
-            matchingFallbacks = 'fvey'
+        }
+        gov {
+            dimension "application"
+            manifestPlaceholders = [atakApiVersion: "com.atakmap.app@" + ATAK_VERSION + ".GOV"]
         }
         can {
             dimension "application"
             manifestPlaceholders = [atakApiVersion: "com.atakmap.app@" + ATAK_VERSION + ".CAN"]
-            matchingFallbacks = 'fvey'
-        }
-        intl {
-            dimension "application"
-            manifestPlaceholders = [atakApiVersion: "com.atakmap.app@" + ATAK_VERSION + ".INTL"]
-            matchingFallbacks = 'fvey'
         }
     }
 
