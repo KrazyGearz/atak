@@ -222,7 +222,8 @@ android {
         }
         gov {
             dimension "application"
-            manifestPlaceholders = [atakApiVersion: "com.atakmap.app@" + ATAK_VERSION + ".GOV"]
+            // GOV builds are just CIV api builds with additional information in the strings file 
+            manifestPlaceholders = [atakApiVersion: "com.atakmap.app@" + ATAK_VERSION + ".CIV"]
         }
         can {
             dimension "application"
@@ -244,8 +245,9 @@ android {
             defaultConfig.versionName = PLUGIN_VERSION + " (" + getVersionName() + ") - [" + ATAK_VERSION + "]"
         }
 
-        // Move the tests to tests/java, tests/res, etc...
-        //instrumentTest.setRoot('tests')
+        gov.java.srcDirs 'src/gov/java'
+        gov.assets.srcDir 'src/gov/assets'
+        gov.res.srcDir 'src/gov/res'
 
         // Move the build types to build-types/<type>
         // For instance, build-types/debug/java, build-types/debug/AndroidManifest.xml, ...
