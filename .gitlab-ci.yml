@@ -2,6 +2,9 @@
 default:
   image: ${TAK_REGISTRY_HOST}/devsecops/android-builder-image:master
 
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+
 before_script:
 
   - regex=".*maintenance-([0-9]+\.[0-9]).*";
@@ -67,31 +70,6 @@ assembleCivOdkRelease:
     - app/build/outputs/
   when: manual
   
-assembleFveySdkRelease:
-  stage: build
-  script:
-    - mkdir sdk
-    - cp atak-civ/main.jar sdk
-    - cp atak-civ/android_keystore sdk
-    - cp atak-civ/atak-gradle-takdev.jar sdk
-    - ./gradlew -Pci --console=plain -Ptakdev.plugin=$PWD/sdk/atak-gradle-takdev.jar lintFveyRelease assembleFveyRelease
-  artifacts:
-    expire_in: 720h
-    paths:
-    - app/build/outputs/
-  when: manual
-  
-assembleFveyOdkRelease:
-  stage: build
-  script:
-    - ./gradlew --console=plain -Pci -Ptakrepo.force=true -Ptakrepo.url=${ARTIFACTORY_URL_APK} -Ptakrepo.user=${ARTIFACTORY_USER} -Ptakrepo.password=${ARTIFACTORY_PASSWORD} assembleFveyRelease
-  artifacts:
-    expire_in: 720h
-    paths:
-    - app/build/outputs/
-  when: manual
-
-
 testRelease:
   stage: test
   script:
