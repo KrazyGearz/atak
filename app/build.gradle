@@ -44,7 +44,6 @@ buildscript {
     ext.takdevPlugin = getProperty('takdev.plugin', "${rootDir}/../../atak-gradle-takdev.jar")
 
     repositories {
-        mavenCentral()
         google()
         mavenCentral()
         mavenLocal()
