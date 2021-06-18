@@ -1,6 +1,10 @@
-
 default:
   image: ${TAK_REGISTRY_HOST}/devsecops/android-builder-image:master
+
+include:
+  - project: 'devsecops/gitlab-ci-common'
+    ref: master
+    file: '/template/build_and_sign.yml'
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
@@ -69,7 +73,13 @@ assembleCivOdkRelease:
     paths:
     - app/build/outputs/
   when: manual
-  
+
+assembleProduction:
+  stage: build
+  extends: .build_and_sign
+  variables:
+    variants: "civ mil"
+
 testRelease:
   stage: test
   script:
