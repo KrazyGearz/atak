@@ -12,7 +12,6 @@ import com.atakmap.android.maps.MapView;
 import com.atakmap.android.plugintemplate.plugin.R;
 import com.atakmap.android.dropdown.DropDown.OnStateListener;
 import com.atakmap.android.dropdown.DropDownReceiver;
-import android.widget.Button;
 
 import com.atakmap.coremap.log.Log;
 
@@ -38,39 +37,6 @@ public class PluginTemplateDropDownReceiver extends DropDownReceiver implements
         // developers to look at this Inflator
         templateView = PluginLayoutInflater.inflate(context,
                 R.layout.main_layout, null);
-
-        Button b = templateView.findViewById(R.id.panToZoom);
-        b.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Thread t = new Thread(new Runnable() {
-                    public void run() {
-                        GeoPoint gp;
-
-                        gp = new GeoPoint(38.91370, -104.98415, 7694);
-                        mapView.getMapController().panZoomTo(gp, 0.00005d,
-                                false);
-                        try {
-                            Thread.sleep(1000);
-                        } catch (Exception e) {
-                        }
-                        gp = new GeoPoint(47.39838, 8.54375, 1744);
-                        mapView.getMapController().panZoomTo(gp, 0.00005d,
-                                false);
-                        try {
-                            Thread.sleep(1000);
-                        } catch (Exception e) {
-                        }
-                        gp = new GeoPoint(38.91370, -104.98415, 7694);
-                        mapView.getMapController().panZoomTo(gp, 0.00005d,
-                                false);
-
-                    }
-                });
-                t.start();
-            }
-        });
 
     }
 
