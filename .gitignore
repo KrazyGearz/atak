@@ -76,3 +76,5 @@ sdk/android_keystore
 
 #espresso
 espresso
+
+template.local.properties
