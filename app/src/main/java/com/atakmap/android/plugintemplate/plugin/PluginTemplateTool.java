@@ -4,7 +4,7 @@ package com.atakmap.android.plugintemplate.plugin;
 import com.atak.plugins.impl.AbstractPluginTool;
 import com.atakmap.android.ipc.AtakBroadcast;
 import com.atakmap.android.plugintemplate.PluginTemplateDropDownReceiver;
-import com.atakmap.util.Disposable;
+import gov.tak.api.util.Disposable;
 
 import android.app.Activity;
 import android.content.Context;
