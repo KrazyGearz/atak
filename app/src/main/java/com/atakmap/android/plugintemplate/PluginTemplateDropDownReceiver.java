@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 
-import com.atakmap.coremap.maps.coords.GeoPoint;
-
 import com.atak.plugins.impl.PluginLayoutInflater;
 import com.atakmap.android.maps.MapView;
 import com.atakmap.android.plugintemplate.plugin.R;
