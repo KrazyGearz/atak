@@ -17,10 +17,12 @@ public class PluginTemplate implements IPlugin {
     PluginTemplateTool tool;
     PluginTemplateMapComponent pluginMapComponent;
     Context pluginContext;
+
     public PluginTemplate(IServiceController serviceController) {
         this.serviceController = serviceController;
-        final PluginContextProvider ctxProvider = serviceController.getService(PluginContextProvider.class);
-        if(ctxProvider != null)
+        final PluginContextProvider ctxProvider = serviceController
+                .getService(PluginContextProvider.class);
+        if (ctxProvider != null)
             pluginContext = ctxProvider.getPluginContext();
     }
 
@@ -31,13 +33,15 @@ public class PluginTemplate implements IPlugin {
         tool = new PluginTemplateTool(pluginContext);
 
         serviceController.registerComponent(ToolDescriptor.class, tool);
-        serviceController.registerComponent(MapComponent.class, pluginMapComponent);
+        serviceController.registerComponent(MapComponent.class,
+                pluginMapComponent);
     }
 
     @Override
     public void onStop() {
         serviceController.unregisterComponent(ToolDescriptor.class, tool);
-        serviceController.unregisterComponent(MapComponent.class, pluginMapComponent);
+        serviceController.unregisterComponent(MapComponent.class,
+                pluginMapComponent);
 
     }
 }
