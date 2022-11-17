@@ -13,7 +13,8 @@ import gov.tak.api.util.Disposable;
  *     Support for versions prior to 4.5.1 can make use of a copy of AbstractPluginTool shipped with
  *     the plugin.
  */
-public class PluginTemplateTool extends AbstractPluginTool implements Disposable {
+public class PluginTemplateTool extends AbstractPluginTool
+        implements Disposable {
 
     public PluginTemplateTool(Context context) {
         super(context,
