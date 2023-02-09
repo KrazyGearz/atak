@@ -5,88 +5,54 @@ include:
   - project: 'devsecops/gitlab-ci-common'
     ref: master
     file: '/template/build_and_sign.yml'
+  - project: 'devsecops/gitlab-ci-common'
+    ref: master
+    file: '/template/artifactory_token_service.yml'
 
 variables:
+  GIT_DEPTH: 1
   GIT_SUBMODULE_STRATEGY: recursive
-
-before_script:
-
-  - regex=".*maintenance-([0-9]+\.[0-9]).*";
-    if [[ ${CI_COMMIT_REF_NAME} =~ ${regex} ]]; then
-    SDK_BRANCH_NAME="maintenance-${BASH_REMATCH[1]}";
-    else
-    SDK_BRANCH_NAME="master";
-    fi
-  - echo "SDK Branch $SDK_BRANCH_NAME"
-
-  - git clone --depth 1 -b $SDK_BRANCH_NAME ${CI_SERVER_PROTOCOL}://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_HOST}/sdks/atak-civ.git
 
 stages:
   - build
   - test
-  
-assembleMilSdkRelease:
+
+.assemblePlugin:
+  extends: .artifactory_service_create_token
   stage: build
   script:
-    - pwd .
-    - mkdir sdk
-    - cp atak-civ/main.jar sdk
-    - cp atak-civ/android_keystore sdk
-    - cp atak-civ/atak-gradle-takdev.jar sdk
-    - find . -name main.jar
-    - ./gradlew -Pci --console=plain -Ptakdev.plugin=$PWD/sdk/atak-gradle-takdev.jar lintMilRelease assembleMilRelease
+    -  ./gradlew -Pci --console=plain -Ptakrepo.url=$ARTIFACTORY_URL_APK -Ptakrepo.user=$GITLAB_USER_EMAIL -Ptakrepo.password=${CI_JOB_ARTIFACTORY_TOKEN} ${ASSEMBLE_GRADLE_TASK}
   artifacts:
     expire_in: 720h
     paths:
     - app/build/outputs/
 
-assembleMilOdkRelease:
-  stage: build
-  script:
-    - ./gradlew --console=plain -Pci -Ptakrepo.force=true -Ptakrepo.url=${ARTIFACTORY_URL_APK} -Ptakrepo.user=${ARTIFACTORY_USER} -Ptakrepo.password=${ARTIFACTORY_PASSWORD} assembleMilRelease
-  artifacts:
-    expire_in: 720h
-    paths:
-    - app/build/outputs/
-  when: manual
-  
-assembleCivSdkRelease:
-  stage: build
-  script:
-    - mkdir sdk
-    - cp atak-civ/main.jar sdk
-    - cp atak-civ/android_keystore sdk
-    - cp atak-civ/atak-gradle-takdev.jar sdk
-    - ./gradlew -Pci --console=plain -Ptakdev.plugin=$PWD/sdk/atak-gradle-takdev.jar lintCivRelease assembleCivRelease
-  artifacts:
-    expire_in: 720h
-    paths:
-    - app/build/outputs/
-  when: manual
+assembleMilSdk:
+  extends: .assemblePlugin
+  variables:
+    ASSEMBLE_GRADLE_TASK: assembleMilDebug
 
-assembleCivOdkRelease:
-  stage: build
-  script:
-    - ./gradlew --console=plain -Pci -Ptakrepo.force=true -Ptakrepo.url=${ARTIFACTORY_URL_APK} -Ptakrepo.user=${ARTIFACTORY_USER} -Ptakrepo.password=${ARTIFACTORY_PASSWORD} assembleCivRelease
-  artifacts:
-    expire_in: 720h
-    paths:
-    - app/build/outputs/
-  when: manual
+assembleMilOdk:
+  extends: .assemblePlugin
+  variables:
+    ASSEMBLE_GRADLE_TASK: assembleMilRelease
+  
+assembleCivSdk:
+  extends: .assemblePlugin
+  variables:
+    ASSEMBLE_GRADLE_TASK: assembleCivDebug
+
+assembleCivOdk:
+  extends: .assemblePlugin
+  variables:
+    ASSEMBLE_GRADLE_TASK: assembleCivRelease
 
 assembleProduction:
   stage: build
   extends: .build_and_sign
-  variables:
-    variants: "civ mil"
 
 testRelease:
+  extends: .artifactory_service_create_token
   stage: test
   script:
-    - mkdir sdk
-    - cp atak-civ/main.jar sdk
-    - cp atak-civ/android_keystore sdk
-    - cp -R atak-civ/espresso .
-    - cp atak-civ/atak-gradle-takdev.jar sdk
-    - ./gradlew -Pci --console=plain -Ptakdev.plugin=$PWD/sdk/atak-gradle-takdev.jar :app:testMilRelease
-
+    - ./gradlew -Pci --console=plain -Ptakrepo.url=$ARTIFACTORY_URL_APK -Ptakrepo.user=$GITLAB_USER_EMAIL -Ptakrepo.password=${CI_JOB_ARTIFACTORY_TOKEN} :app:testMilRelease
