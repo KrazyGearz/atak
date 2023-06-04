@@ -166,7 +166,8 @@ android {
                 matchingFallbacks = ['civ']
 
                 // set the api version information
-                manifestPlaceholders = [atakApiVersion: "com.atakmap.app@" + ATAK_VERSION + ".${flav.name.toUpperCase()}"]
+                def pluginApiFlavor = flav.name.equals('gov') ? 'CIV' : "${flav.name.toUpperCase()}"
+                manifestPlaceholders = [atakApiVersion: "com.atakmap.app@" + ATAK_VERSION + ".${pluginApiFlavor}"]
 
                 // additional variables associated with the flav can be set here once defined above
                 // buildConfigField 'boolean', 'EXAMPLE', "${flav.example}"
