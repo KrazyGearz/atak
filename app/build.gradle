@@ -41,7 +41,7 @@ buildscript {
     ext.takrepoUrl = getProperty(urlKey, 'https://localhost/')
     ext.takrepoUser = getProperty('takrepo.user', 'invalid')
     ext.takrepoPassword = getProperty('takrepo.password', 'invalid')
-    ext.takdevPlugin = getProperty('takdev.plugin', "${rootDir}/../../main.jar")
+    ext.takdevPlugin = getProperty('takdev.plugin', "${rootDir}/../../atak-gradle-takdev.jar")
 
     repositories {
         google()
@@ -59,7 +59,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.4.2'
+        classpath 'com.android.tools.build:gradle:4.2.2'
         if(isDevKitEnabled()) {
             classpath "com.atakmap.gradle:atak-gradle-takdev:${takdevVersion}"
         } else {
@@ -108,7 +108,20 @@ def supportedFlavors =
 ]
 
 android {
-    compileSdk 31
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
+    useLibrary 'org.apache.http.legacy'
+    compileSdkVersion 34
+    buildToolsVersion "30.0.2"
+
+    dataBinding {
+        android.buildFeatures.dataBinding = true
+        android.buildFeatures.viewBinding = true
+    }
+
 
     dexOptions {
         jumboMode = true
@@ -213,7 +226,7 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 28
         targetSdkVersion 31
 
         def runTasks = gradle.startParameter.taskNames
@@ -226,11 +239,35 @@ android {
                 abiFilters "armeabi-v7a", "arm64-v8a", "x86"
             }
         }
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [
+                        "room.schemaLocation"  : "$projectDir/schemas".toString(),
+                        "room.incremental"     : "true",
+                        "room.expandProjection": "true"
+                ]
+            }
+
+            testInstrumentationRunner "com.atakmap.android.test.helpers.NoFinishAndroidJUnitRunner"
+        }
     }
 }
 
 
 dependencies {
     implementation fileTree(dir: 'libs', include: '*.jar')
+    api 'com.google.android.material:material:1.4.0'
+    testImplementation project(path: ':app')
+    testImplementation "androidx.room:room-testing:2.5.2"
+    androidTestImplementation "androidx.room:room-testing:2.5.2"
+    testImplementation "androidx.test:core:1.4.0"
+
+    implementation "androidx.room:room-runtime:2.5.2"
+    annotationProcessor "androidx.room:room-compiler:2.5.2"
+
+    androidTestImplementation 'androidx.lifecycle:lifecycle-runtime:2.2.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+
 }
 

@@ -1,11 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    
+
     <!-- COMMON -->
     <color name="white">#ffffff</color>
-    <color name="darker_gray">#121212</color>
+    <color name="black">#000000</color>
+    <color name="surface_medium">#2E2E2E</color>
+    <color name="surface_dark">#1B1B1B</color>
 
+    <color name="darker_gray">#212128</color>
+    <color name="dark_surface">#111413</color>
+    <color name="dark_surface_container">#1A1A1A</color>
+    <color name="primary">#BB86FC</color>
+    <color name="onPrimary">#00382d</color>
+    <color name="borderGrey">#8C9299</color>
+    <color name="text_subdued">#A4A4A4</color>
+    <color name="toast_success_background">#50C878</color>
     <!-- LED -->
+
+    <!-- Accordion -->
+    <color name="accordion_background">#121212</color>
+    <color name="accordion_border">#99CBD5E1</color>
+
 
     <!-- PRESET -->
 
