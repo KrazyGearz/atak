@@ -68,6 +68,10 @@ buildscript {
     }
 }
 
+plugins {
+    id "com.diffplug.spotless" version "6.25.0"
+}
+
 allprojects {
     repositories {
         mavenCentral()
@@ -270,4 +274,19 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
 }
+
+spotless {
+    java {
+        target 'src/*/java/**/*.java'
+//        importOrder()
+        removeUnusedImports()
+//        googleJavaFormat().aosp()
+//        formatAnnotations()
+    }
+}
+
+preBuild {
+    dependsOn spotlessApply
+}
+
 
