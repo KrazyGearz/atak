@@ -4,8 +4,5 @@
     <string name="app_name">Plugin Template</string>
     <!-- description -->
     <string name="app_desc">This plugin demonstrate bare bones plugin UI, and may be used to start a new plugin project</string>
-    <string name="tab_1">Tab 1</string>
-    <string name="tab_2">Tab 2</string>
-
-
+    <string name="starter_text">Remove this text view an create your input field and Send button</string>
 </resources>
