@@ -18,9 +18,8 @@ public class ExampleRepository {
         this.exampleDao = exampleDao;
     }
 
-
     public void insert(final ExampleEntity example) {
-        executorService.execute(() -> ExampleDao.insert(example));
+        executorService.execute(() -> exampleDao.insert(example));
     }
 
 

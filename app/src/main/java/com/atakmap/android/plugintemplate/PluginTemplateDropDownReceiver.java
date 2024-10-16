@@ -30,11 +30,13 @@ public class PluginTemplateDropDownReceiver extends DropDownReceiver implements
         super(mapView);
         this.pluginContext = context;
 
+
         // Remember to use the PluginLayoutInflator if you are actually inflating a custom view
         // In this case, using it is not necessary - but I am putting it here to remind
         // developers to look at this Inflator
         templateView = PluginLayoutInflater.inflate(context,
-                R.layout.main_layout, null);
+                // R.layout.main_layout, null);
+                R.layout.example_list, null);
 
     }
 

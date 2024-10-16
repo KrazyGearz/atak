@@ -1,6 +1,7 @@
 package com.atakmap.android.plugintemplate.persistance;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.room.Database;
 import androidx.room.Room;
@@ -9,6 +10,7 @@ import androidx.room.RoomDatabase;
 import com.atakmap.android.maps.MapView;
 import com.atakmap.android.plugintemplate.persistance.example.ExampleDao;
 import com.atakmap.android.plugintemplate.persistance.example.ExampleEntity;
+
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -33,8 +35,11 @@ public abstract class ExampleDatabase extends RoomDatabase {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(() -> {
             ExampleDao exampleDao = db.exampleDao();
-            if (exampleDao.getAll() == null) {
-                ExampleDao.insert(new ExampleEntity(0, "an example"));
+
+            Log.d("SkillBridge", Boolean.toString(exampleDao.getAll().isEmpty()) );
+
+            if (exampleDao.getAll().isEmpty()) {
+                exampleDao.insert(new ExampleEntity( "an example"));
             }
 
         });

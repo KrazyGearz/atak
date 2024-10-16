@@ -13,6 +13,5 @@ public interface ExampleDao {
     List<ExampleEntity> getAll();
 
     @Insert
-    static void insert(ExampleEntity exampleEntity) {
-    }
+    void insert(ExampleEntity exampleEntity);
 }
