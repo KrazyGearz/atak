@@ -7,11 +7,18 @@ import android.view.View;
 
 import com.atak.plugins.impl.PluginLayoutInflater;
 import com.atakmap.android.maps.MapView;
+import com.atakmap.android.plugintemplate.pages.ExamplePage;
+import com.atakmap.android.plugintemplate.persistance.ExampleDatabase;
+import com.atakmap.android.plugintemplate.persistance.ExampleRepository;
+import com.atakmap.android.plugintemplate.persistance.example.Example;
 import com.atakmap.android.plugintemplate.plugin.R;
 import com.atakmap.android.dropdown.DropDown.OnStateListener;
 import com.atakmap.android.dropdown.DropDownReceiver;
 
+import com.atakmap.android.plugintemplate.viewmodel.ExamplePageViewModel;
 import com.atakmap.coremap.log.Log;
+
+import java.util.UUID;
 
 public class PluginTemplateDropDownReceiver extends DropDownReceiver implements
         OnStateListener {
@@ -29,7 +36,6 @@ public class PluginTemplateDropDownReceiver extends DropDownReceiver implements
             final Context context) {
         super(mapView);
         this.pluginContext = context;
-
 
         // Remember to use the PluginLayoutInflator if you are actually inflating a custom view
         // In this case, using it is not necessary - but I am putting it here to remind
@@ -56,8 +62,15 @@ public class PluginTemplateDropDownReceiver extends DropDownReceiver implements
 
         if (action.equals(SHOW_PLUGIN)) {
 
+            ExampleRepository exampleRepository = new ExampleRepository(ExampleDatabase.getDatabase().exampleDao());
+            ExampleDatabase.prepopulateDatabase(ExampleDatabase.getDatabase());
+
+            ExamplePageViewModel exampleVM = new ExamplePageViewModel(new Example(UUID.randomUUID(), "This is an example"));
+
+            View examplePage = new ExamplePage(pluginContext, exampleVM).getView();
+
             Log.d(TAG, "showing plugin drop down");
-            showDropDown(templateView, HALF_WIDTH, FULL_HEIGHT, FULL_WIDTH,
+            showDropDown(examplePage, HALF_WIDTH, FULL_HEIGHT, FULL_WIDTH,
                     HALF_HEIGHT, false, this);
         }
     }

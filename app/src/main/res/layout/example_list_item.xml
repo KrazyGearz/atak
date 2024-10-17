@@ -6,7 +6,7 @@
 
         <variable
             name="example"
-            type="com.atakmap.android.plugintemplate.persistance.example.Example" />
+            type="com.atakmap.android.plugintemplate.persistance.example.ExampleEntity" />
 
         <variable
             name="viewmodel"

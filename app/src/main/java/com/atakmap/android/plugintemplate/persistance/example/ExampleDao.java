@@ -14,4 +14,7 @@ public interface ExampleDao {
 
     @Insert
     void insert(ExampleEntity exampleEntity);
+
+    @Insert
+    void insertAll(List<ExampleEntity> exampleEntities);
 }

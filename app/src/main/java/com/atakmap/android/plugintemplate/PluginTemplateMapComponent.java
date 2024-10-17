@@ -8,8 +8,6 @@ import com.atakmap.android.ipc.AtakBroadcast.DocumentedIntentFilter;
 import com.atakmap.android.maps.MapView;
 import com.atakmap.android.dropdown.DropDownMapComponent;
 
-import com.atakmap.android.plugintemplate.persistance.ExampleDatabase;
-import com.atakmap.android.plugintemplate.persistance.ExampleRepository;
 import com.atakmap.coremap.log.Log;
 import com.atakmap.android.plugintemplate.plugin.R;
 
@@ -19,7 +17,6 @@ public class PluginTemplateMapComponent extends DropDownMapComponent {
     private Context pluginContext;
     private PluginTemplateDropDownReceiver ddr;
 
-    ExampleRepository exampleRepository = new ExampleRepository(ExampleDatabase.getDatabase().exampleDao());
 
     public void onCreate(final Context context, Intent intent,
             final MapView view) {
@@ -27,8 +24,6 @@ public class PluginTemplateMapComponent extends DropDownMapComponent {
         context.setTheme(R.style.ATAKPluginTheme);
         super.onCreate(context, intent, view);
         pluginContext = context;
-
-        ExampleDatabase.prepopulateDatabase(ExampleDatabase.getDatabase());
 
         ddr = new PluginTemplateDropDownReceiver(
                 view, context);

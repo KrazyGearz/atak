@@ -9,12 +9,12 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.DiffUtil;
 
-import com.atakmap.android.plugintemplate.persistance.example.Example;
+import com.atakmap.android.plugintemplate.persistance.example.ExampleEntity;
 import com.atakmap.android.plugintemplate.plugin.R;
 import com.atakmap.android.plugintemplate.plugin.databinding.ExampleListItemBinding;
 import com.atakmap.android.plugintemplate.viewmodel.ExamplePageViewModel;
 
-public class ExampleListAdapter extends ListAdapter<Example, ExampleListAdapter.ViewHolder> {
+public class ExampleListAdapter extends ListAdapter<ExampleEntity, ExampleListAdapter.ViewHolder> {
     private final ExamplePageViewModel viewModel;
 
     public ExampleListAdapter(ExamplePageViewModel viewModel) {
@@ -32,7 +32,7 @@ public class ExampleListAdapter extends ListAdapter<Example, ExampleListAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Example example = this.getItem(position);
+        ExampleEntity example = this.getItem(position);
         holder.binding.setViewmodel(this.viewModel);
         holder.binding.setExample(example);
     }
@@ -47,15 +47,16 @@ public class ExampleListAdapter extends ListAdapter<Example, ExampleListAdapter.
     }
 
 
-    private static final DiffUtil.ItemCallback<Example> DIFF_CALLBACK =
-            new DiffUtil.ItemCallback<Example>() {
+    private static final DiffUtil.ItemCallback<ExampleEntity> DIFF_CALLBACK =
+            new DiffUtil.ItemCallback<ExampleEntity>() {
                 @Override
-                public boolean areItemsTheSame(@NonNull Example oldItem, @NonNull Example newItem) {
-                    return false;
+                public boolean areItemsTheSame(@NonNull ExampleEntity oldItem, @NonNull ExampleEntity newItem) {
+                    return newItem.uid.equals(oldItem.uid);
                 }
 
                 @Override
-                public boolean areContentsTheSame(@NonNull Example oldItem, @NonNull Example newItem) {
+                public boolean areContentsTheSame(@NonNull ExampleEntity oldItem, @NonNull ExampleEntity newItem) {
+                    // check if value is different
                     return false;
                 }
             };

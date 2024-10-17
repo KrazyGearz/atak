@@ -13,6 +13,7 @@ public class ExamplePage {
     public final ExampleListBinding binding;
 
     public ExamplePage(Context context, ExamplePageViewModel viewModel){
+
         binding = ExampleListBinding.bind(PluginLayoutInflater.inflate(context, R.layout.example_list, null));
         binding.setViewmodel(viewModel);
         ExampleListAdapter exampleListAdapter = new ExampleListAdapter(viewModel);
@@ -21,6 +22,4 @@ public class ExamplePage {
 
 
     public View getView() { return this.binding.getRoot();}
-
-    public ExamplePageViewModel getViewModel() { return this.binding.getViewmodel();}
 }

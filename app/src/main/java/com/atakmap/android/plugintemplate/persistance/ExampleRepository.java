@@ -22,5 +22,8 @@ public class ExampleRepository {
         executorService.execute(() -> exampleDao.insert(example));
     }
 
+    public void insertAll(final List<ExampleEntity> exampleEntities) {
+        executorService.execute(() -> exampleDao.insertAll(exampleEntities));
+    }
 
 }
